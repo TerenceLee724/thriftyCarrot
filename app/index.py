@@ -17,7 +17,7 @@ def index():
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
             current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
-    else:
+    elif not current_user.is_authenticated:
         purchases = None
     # render the page by adding information to the index.html file
     return render_template('index.html',
