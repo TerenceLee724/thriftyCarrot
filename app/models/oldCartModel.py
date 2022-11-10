@@ -26,9 +26,20 @@ SELECT cid, uid, cart_name, time_created
 FROM OldCarts
 WHERE uid = :uid
 ORDER BY time_created DESC
-limit 3
 ''',
                               uid=uid)
+        return [OldCartModel(*row) for row in rows]
+
+    @staticmethod
+    def get_recent_three_by_uid(uid):
+        rows = app.db.execute('''
+SELECT cid, uid, cart_name, time_created
+FROM OldCarts
+WHERE uid = :uid
+ORDER BY time_created DESC
+limit 3
+''',
+                              uid=uid)        
         return [OldCartModel(*row) for row in rows]
 
     @staticmethod

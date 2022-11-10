@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<br>
+<h2>Welcome Back! {{current_user.firstname}} :)</h2>
 
 <style>
   .button {
@@ -18,12 +20,91 @@
 </style>
 </head>
 <body>
-<br>
 <a href="{{ url_for('carts.newcart') }}" class="button">Start new cart!</a>
 </body>
 
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+</head>
+<body>
+  
+<br><br>
+<h2>Your Three Recent CarrotCarts:</h2>
+
+{% for cart in carts%}
+<button type="button" class="collapsible">Open {{cart.cart_name}} -- Created on {{cart.time_created}}</button>
+<div class="content">
+  <p><table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Category</th>
+        <th scope="col">Store</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for purchase in cartContent%}
+        {% if cart.cid == purchase.cid: %}
+          <tr>
+            <td>{{purchase.product_name}}</td>
+            <td>{{purchase.price}}</td>
+            <td>{{purchase.category}}</td>
+            <td>{{purchase.store}}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table></p>
+</div>
+{% endfor %}
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
+</body>
+
+<br><br>
+<h2>Products for Sale:</h2>
 <br>
-<h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -42,30 +123,5 @@
     {% endfor %}
   </tbody>
 </table>
-
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Your recent purchases:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Purchase ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for purchase in purchase_history%}
-      <tr>
-        <th scope="row">{{purchase.id}}</th>
-        <td>{{purchase.pid}}</td>
-        <td>{{purchase.time_purchased}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history!</p>
-{% endif %}
 
 {% endblock %}

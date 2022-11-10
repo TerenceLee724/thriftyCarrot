@@ -7,7 +7,7 @@ num_users = 100
 num_products = 2000
 num_preferences = 500
 num_itemsInCart = 1000
-num_carts = 400
+num_carts = 500
 num_purchases = 2500
 
 Faker.seed(0)
@@ -118,6 +118,7 @@ def gen_oldCarts(num_carts):
         print(f'{num_carts} generated')
     return
 
+"""
 # __cid__, __pid__, product_name, price, category, store
 def gen_oldCartContent(num_purchases, num_carts, products):
     with open('OldCartContent.csv', 'w') as f:
@@ -139,10 +140,32 @@ def gen_oldCartContent(num_purchases, num_carts, products):
                 counter += 1
         print(f'{counter} generated;')
     return
+"""
+# CHANGES: removed num_purchases to ensure each cart gets a list of products,
+#          instead for each cart, it generates a random number of products from 1-25
+# __cid__, __pid__, product_name, price, category, store
+def gen_oldCartContent(num_carts, products):
+    with open('OldCartContent.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('OldCartContents...', end=' ', flush=True)
+        counter = 0
+        for cid in range(num_carts):
+            # Generates list of random products user placed in cart
+            randomProductList = random.sample(range(0, num_products), random.randint(1, 25))
+            for j in randomProductList:
+                pid = j
+                product_name = products[j][1]
+                price = products[j][2]
+                category = products[j][3]
+                store = products[j][4]
+                writer.writerow([cid, pid, product_name, price, category, store])
+                counter += 1
+        print(f'{counter} generated;')
+    return
 
 gen_users(num_users)
 products = gen_products(num_products)
 gen_preferences(num_preferences)
 gen_carts(num_itemsInCart)
 gen_oldCarts(num_carts)
-gen_oldCartContent(num_purchases, num_carts, products)
+gen_oldCartContent(num_carts, products)
