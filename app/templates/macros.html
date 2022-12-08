@@ -1,0 +1,23 @@
+{# Render lap form.
+Adapted from: https://www.rmedgar.com/blog/dynamic-fields-flask-wtf/
+
+    This macro is intended to render both regular product subforms (received from the
+    server) and the template form used to dynamically add more forms.
+    
+    Arguments:
+        - subform: Form object to render
+        - index: Index of the form. For proper subforms rendered in the form loop,
+                 this should match `loop.index0`, and for the template it should be
+                 '_'
+#}
+
+{%- macro render_product_form(subform, index) %}
+    <div id="product-{{ index }}-form" class="{% if index != '_' %}subform{% else %}is-hidden{% endif %}" data-index="{{ index }}">
+        <ul class="productlist"> 
+            <div>
+                {{ subform.product(class_='product-form-entry') }}
+                <a class="remove" href="#"> x</a>
+            </div>
+        </ul>
+    </div>
+{%- endmacro %}

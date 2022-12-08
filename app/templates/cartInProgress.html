@@ -1,0 +1,80 @@
+{% extends "navbar.html" %}
+
+{% block stylesheets %} 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carts.css') }}">
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('table.home-table').DataTable({
+        searching: false,
+        paging: false,
+        info: false
+      });
+    });
+
+    var coll = document.getElementsByClassName("collapsible");
+    for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
+    }
+  </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="cartinprogress">
+    <h2 align="center" style="margin-top:16px; margin-bottom:0px;">
+        {{ cartName }}
+    </h2>
+    <p class="description">
+        Choose items to add to your cart, {{ cartName }}
+    </p>
+    <form method="POST">
+        {% for i in range(cartLength)%}
+            <h3 data-toggle="collapse" class="collapsible product-header">
+                {{ cartList[i].product_name }}
+            </h3>
+            <div class="collapse content" style="display:block;">
+                <table class="home-table hover" id="data">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Store</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {% for product in searchResults[i] %}
+                        <tbody>
+                            <tr>
+                                <td>{{product.name}}</td>
+                                <td>{{product.price}}</td>
+                                <td>{{product.category}}</td>
+                                <td>{{product.store}}</td>
+                                <td style="position:relative;">
+                                    <div class="cart-check-container">
+                                        <input class="cart-check" type="checkbox" name="product_info" id="inlineCheckbox-{{ loop.index }}" value="{{ product.id }}">
+                                        <label for="cart-check"></label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+    <input class="btn submit-button" type="submit" name="submit-button" value="Complete Cart" style="position:absolute; right:12.5%; padding:8px; margin-top:8px; margin-bottom:8px;">
+    </form>
+</div>
+
+{% endblock content %}

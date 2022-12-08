@@ -56,3 +56,53 @@ limit 5
                               uid=uid)
         return [PreferenceModel(*row) for row in rows]
 
+    # This method retrieves the review by the given user
+    # for the given product, as well as product name from Products table
+    @staticmethod
+    def get_product_review(uid,pid):
+        rows = app.db.execute('''
+SELECT Preferences.uid, Preferences.pid, Products.name, Preferences.like_dislike, Preferences.time_created
+FROM Preferences, Products
+WHERE Preferences.uid = :uid 
+AND Preferences.pid = :pid
+AND Preferences.pid = Products.id
+''', uid=uid, pid = pid)
+        return [PreferenceModel(*row) for row in rows]
+
+    #This method adds the user's preference/review
+    #for the given product
+    @staticmethod
+    def insert(uid, pid, like_dislike):
+        try:
+            rows = app.db.execute("""
+INSERT INTO Preferences(uid, pid, like_dislike)
+VALUES(:uid, :pid, :like_dislike)
+RETURNING uid, pid
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  like_dislike=like_dislike)
+            uid1 = rows[0][0]
+            pid1 = rows[0][1]
+            return PreferenceModel.get_product_review(uid1,pid1)
+        except Exception as e:
+            # likely issue with product already reviewed
+            print(str(e))
+        try:
+            rows = app.db.execute("""
+UPDATE Preferences
+SET like_dislike = :like_dislike
+WHERE uid = :uid
+AND pid = :pid
+RETURNING uid, pid
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  like_dislike=like_dislike)
+            uid1 = rows[0][0]
+            pid1 = rows[0][1]
+            return PreferenceModel.get_product_review(uid1,pid1)
+        except Exception as e:
+            print(str(e))
+            return None
+

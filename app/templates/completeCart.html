@@ -1,0 +1,81 @@
+{% extends "navbar.html" %}
+
+{% block stylesheets %} 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carts.css') }}">
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('table.home-table').DataTable({
+        searching: false,
+        paging: false,
+        info: false
+      });
+    });
+
+    items = document.getElementsByClassName("qt-input")
+    for(i = 0; i < items.length; i++){
+        items[i].addEventListener('input', updateValue);
+    }
+
+    function updateValue(e) {
+        quantity = e.target
+        index = quantity.getAttribute('id').split('-')[1]
+        checkbox = document.getElementById("inlineCheckbox-" + index)
+        pid = checkbox.getAttribute('value').split('-')[0]
+        checkbox.setAttribute('value', pid + '-' + quantity.value)
+    }
+  </script>
+{% endblock %}
+
+{% block content %}
+
+<h2 align="center" style="margin-top:16px; margin-bottom:0px;">
+    {{ cartName }}
+</h2>
+<p class="description">
+    Select items and quanity finally bought, then complete cart to add it to your old carts.
+</p>
+<div style="position:relative;">
+    <form method="POST">
+        <h3 class="collapsible" style="font-size:24px;">
+            Current Cart:
+        </h3>
+        <table class="home-table content" style="width:75%;">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Store</th>
+                    <th>Qt.</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% for i in range(cartLength) %}
+                <tbody>
+                    <tr>
+                        <td>{{products[i].name}}</td>
+                        <td>{{products[i].price}}</td>
+                        <td>{{products[i].category}}</td>
+                        <td>{{products[i].store}}</td>
+                        <div class="cart-action">
+                            <td>
+                                <input class="qt-input" type="number" id="qt-{{ loop.index }}" value="1" min="0" max="100">
+                            </td>
+                            <td>
+                                <div>
+                                    <input class="cart-check-input" type="checkbox" name="product_info" id="inlineCheckbox-{{ loop.index }}" value="{{ products[i].id }}-1">
+                                </div>
+                            </td>
+                        </div>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    <button class="submit-button" type="submit" name="submit-button" value="Submit">Complete Cart</button>
+    </form>
+</div>
+
+{% endblock content %}

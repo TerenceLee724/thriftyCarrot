@@ -37,13 +37,11 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
-
 @bp.route('/userProfile', methods=['GET', 'POST'])
 @login_required
 def profile():
     userInfo = UserModel.get_all_by_uid(current_user.id)
     return render_template('userProfile.html',userInfo=userInfo, profilePic = UserModel.profilePicUrl)
-
 
 class UpdateForm(FlaskForm):
     firstname = StringField('First Name')
@@ -58,9 +56,6 @@ class UpdateForm(FlaskForm):
     def validate_email(self, email):
         if UserModel.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
-
-    
-
 
 @bp.route('/userUpdate', methods=['GET', 'POST'])
 @login_required
@@ -96,7 +91,6 @@ class RegistrationForm(FlaskForm):
         if UserModel.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
 
-
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -110,7 +104,6 @@ def register():
             flash('Congratulations, you are now a registered user!')
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
-
 
 @bp.route('/logout')
 def logout():

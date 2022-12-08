@@ -1,0 +1,39 @@
+{% extends "navbar.html" %}
+
+{% block content %}
+<div class="container">
+&nbsp;
+<div class="row gutters-sm">
+  
+  <div class="col-md-8">
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="card">
+        <h5 class="card-title mt-4 ml-3">Add a review:</h5>
+        <hr>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Carrot</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ form.like_dislike.label }}<br/>
+              {{ form.like_dislike(size=32) }}<br/>
+            </div>
+          </div>
+          <hr>
+          <hr>
+
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.submit(class_="btn btn-info") }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+</div>
+{% endblock %}

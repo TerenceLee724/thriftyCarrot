@@ -1,0 +1,83 @@
+/* NEWCART STYLING */
+.product-form {
+    width: 560px;
+    position: relative;
+    margin: auto;
+    padding: 16px;
+    text-align: center;
+}
+
+.form-cartname {
+    padding: 8px;
+}
+
+.form-productname {
+    top: 25%;
+    padding: 8px;
+}
+
+.product-form-entry {
+    text-align: center;
+    left: 50%;
+}
+
+.remove {
+    position: absolute;
+}
+
+ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+a {
+    color: var(--darkThriftyGreen);
+    padding: 4px;
+}
+
+a:hover {
+    text-decoration: none;
+    color: var(--darkThriftyGreen);
+    font-weight: 500;
+}
+
+.add {
+    width: 120px;
+    position: absolute;
+    left: 35%;
+}
+
+.next {
+    position: absolute;
+    right: 35%;
+}
+
+.product-header {
+    font-size: 24px;
+}
+
+.collapsible {
+    border-width: 8px;
+}
+
+.active {
+    background-color: var(--thriftyGreen);
+    border-color: var(--thriftyGreen);
+}
+
+.description{
+    font-style: italic;
+    text-align: center;
+    color: var(--lightThriftyGreen)
+}
+
+.submit-button{
+    position: absolute; 
+    right: 12.5%; 
+    padding:8px; 
+    margin-top:8px; 
+    margin-bottom:8px;
+    border-radius: 5px !important;
+    border-style: solid;
+    border-color: transparent;
+}

@@ -1,33 +1,60 @@
 from flask import current_app as app
 
 # model
-# __cid__, __pid__, product_name, price, category, store
+# __cid__, __pid__, product_name, price, category, store, quantity
 class OldCartContentModel:
-    def __init__(self, cid, pid, product_name, price, category, store):
+    def __init__(self, cid, pid, product_name, price, category, store, quantity=1):
         self.cid = cid
         self.pid = pid
         self.product_name = product_name
         self.price = price
         self.category = category
         self.store = store
+        self.quantity = quantity
 
     @staticmethod
     def get(cid):
         rows = app.db.execute('''
-SELECT cid, pid, product_name, price, category, store
+SELECT cid, pid, product_name, price, category, store, quantity
 FROM OldCartContents
 WHERE cid = :cid
 ''',
                               cid=cid)
         return OldCartContentModel(*(rows[0])) if rows else None
+    @staticmethod
+    def get_count_by_category(uid):
+        rows = app.db.execute('''
+SELECT COUNT(Cart.cid), COUNT(Contents.pid), COUNT(Contents.product_name), SUM(Contents.price), Contents.category, COUNT(Contents.store), SUM(Contents.quantity)
+FROM OldCartContents AS Contents, OldCarts AS Cart
+WHERE Cart.uid = :uid
+AND Cart.cid = Contents.cid
+GROUP BY category
+''',
+                              uid=uid)
+        return [OldCartContentModel(*row) for row in rows]
 
+    @staticmethod
+    def get_last_cart_prices(uid):
+        rows = app.db.execute('''
+SELECT COUNT(Cart.cid), COUNT(Contents.pid), MIN(Contents.product_name), SUM(Contents.price), COUNT(Contents.category), COUNT(Contents.store), SUM(Contents.quantity)
+FROM OldCartContents AS Contents, OldCarts AS Cart
+WHERE Cart.uid = :uid
+AND Contents.cid = (SELECT cid
+    FROM OldCarts
+    WHERE uid = :uid
+    ORDER BY time_created DESC
+    limit 1)
+GROUP BY pid
+''',
+                              uid=uid)
+        return [OldCartContentModel(*row) for row in rows]
     @staticmethod
     def get_most_recent_by_uid(uid):
         rows = app.db.execute('''
-SELECT OldCarts.cid, OldCartContents.pid, OldCartContents.product_name, OldCartContents.price, OldCartContents.category, OldCartContents.store
-FROM OldCartContents, OldCarts
-WHERE OldCarts.uid = :uid
-AND OldCarts.cid = OldCartContents.cid
+SELECT Cart.cid, Contents.pid, Contents.product_name, Contents.price, Contents.category, Contents.store, Contents.quantity
+FROM OldCartContents AS Contents, OldCarts AS Cart
+WHERE Cart.uid = :uid
+AND Cart.cid = Contents.cid
 ORDER BY time_created DESC
 ''',
                               uid=uid)
@@ -36,11 +63,11 @@ ORDER BY time_created DESC
     @staticmethod
     def get_all_by_uid_since(uid, since):
         rows = app.db.execute('''
-SELECT OldCarts.cid, OldCartContents.pid, OldCartContents.product_name, OldCartContents.price, OldCartContents.category, OldCartContents.store
-FROM OldCartContents, OldCarts
-WHERE OldCarts.uid = :uid
-AND OldCarts.time_created >= :since
-AND OldCarts.cid = OldCartContents.cid
+SELECT Cart.cid, Contents.pid, Contents.product_name, Contents.price, Contents.category, Contents.store, Contents.quantity
+FROM OldCartContents AS Contents, OldCarts AS Cart
+WHERE Cart.uid = :uid
+AND Cart.time_created >= :since
+AND Cart.cid = Contents.cid
 ORDER BY time_created DESC
 ''',
                               uid=uid,
@@ -55,9 +82,9 @@ WITH AllOldCarts AS
 FROM OldCarts
 WHERE uid = :uid
 ORDER BY time_created DESC)
-SELECT OldCartContents.cid, OldCartContents.pid, OldCartContents.product_name, OldCartContents.price, OldCartContents.category, OldCartContents.store
-FROM OldCartContents, AllOldCarts
-WHERE AllOldCarts.cid = OldCartContents.cid
+SELECT Contents.cid, Contents.pid, Contents.product_name, Contents.price, Contents.category, Contents.store, Contents.quantity
+FROM OldCartContents AS Contents, AllOldCarts
+WHERE AllOldCarts.cid = Contents.cid
 ''',
                               uid=uid)        
         return [OldCartContentModel(*row) for row in rows]
@@ -71,9 +98,27 @@ FROM OldCarts
 WHERE uid = :uid
 ORDER BY time_created DESC
 limit 3)
-SELECT OldCartContents.cid, OldCartContents.pid, OldCartContents.product_name, OldCartContents.price, OldCartContents.category, OldCartContents.store
-FROM OldCartContents, RecentThree
-WHERE RecentThree.cid = OldCartContents.cid
+SELECT Contents.cid, Contents.pid, Contents.product_name, Contents.price, Contents.category, Contents.store, Contents.quantity
+FROM OldCartContents AS Contents, RecentThree
+WHERE RecentThree.cid = Contents.cid
 ''',
                               uid=uid)        
         return [OldCartContentModel(*row) for row in rows]
+
+    @staticmethod
+    def insert(cid, pid, product_name, price, category, store, quantity=1):
+        try:
+            app.db.execute("""
+INSERT INTO OldCartContents(cid, pid, product_name, price, category, store, quantity)
+VALUES(:cid, :pid, :product_name, :price, :category, :store, :quantity)
+""",
+                                cid=cid,
+                                pid=pid, 
+                                product_name=product_name, 
+                                price=price, 
+                                category=category, 
+                                store=store,
+                                quantity=quantity)
+        except Exception as e:
+            print(str(e))
+            return None

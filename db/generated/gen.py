@@ -7,8 +7,8 @@ num_users = 100
 num_products = 2000
 num_preferences = 500
 num_itemsInCart = 1000
-num_carts = 500
-num_purchases = 2500
+num_carts = 50
+num_oldCarts = 500
 
 Faker.seed(0)
 fake = Faker()
@@ -49,7 +49,7 @@ def gen_products(num_products):
             if pid % 100 == 0:
                 print(f'{pid}', end=' ', flush=True)
             name = fake.sentence(nb_words=4)[:-1]
-            price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+            price = f'{str(fake.random_int(max=50))}.{fake.random_int(max=99):02}'
             last_update = fake.date_time_between('-2w')
             category = random.choice(categories)
             store = random.choice(stores)
@@ -81,11 +81,47 @@ def gen_preferences(num_preferences):
         print(f'{num_preferences} generated;')
     return
 
-# __uid__, __pid__, quantity
-def gen_carts(num_itemsInCart):
+# __uid__, cart_name, time_started
+def gen_carts(num_carts):
     with open('Carts.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Carts...', end=' ', flush=True)
+        randomUserList = random.sample(range(0, num_users), k=num_carts)
+        for i in range(num_carts):
+            if i % 100 == 0:
+                print(f'{i}', end=' ', flush=True)
+            uid = randomUserList[i]
+            cart_name = fake.sentence(nb_words=2)[:-1]
+            time_started = fake.date_time()
+            writer.writerow([uid, cart_name, time_started])
+        print(f'{num_carts} generated')
+    return
+
+# __uid__, product_name
+def gen_cartLists(num_itemsInCart):
+    with open('CartLists.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('CartLists...', end=' ', flush=True)
+        counter = 0
+        # Generates list of random users of random length
+        randomUserList = random.sample(range(0, num_users), random.randint(0, num_users))
+        for i in range(min(len(randomUserList), num_itemsInCart)):
+            if(counter>=num_itemsInCart): break
+            uid = randomUserList[i]
+            # random number of items in current cart
+            for j in range(0, random.randint(0, 20)):
+                if(counter>=num_itemsInCart): break
+                product_name = fake.sentence(nb_words=2)[:-1]
+                writer.writerow([uid, product_name])
+                counter += 1
+        print(f'{counter} generated;')
+    return
+
+# __uid__, __pid__, quantity
+def gen_cartContents(num_itemsInCart):
+    with open('CartContents.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('CartContents...', end=' ', flush=True)
         counter = 0
         # Generates list of random users of random length
         randomUserList = random.sample(range(0, num_users), random.randint(0, num_users))
@@ -104,46 +140,21 @@ def gen_carts(num_itemsInCart):
     return
 
 # __cid__, uid, cart_name, time_created
-def gen_oldCarts(num_carts):
+def gen_oldCarts(num_oldCarts):
     with open('OldCarts.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('OldCarts...', end=' ', flush=True)
-        for cid in range(num_carts):
+        for cid in range(num_oldCarts):
             if cid % 100 == 0:
                 print(f'{cid}', end=' ', flush=True)
             uid = fake.random_int(min=0, max=num_users-1)
             cart_name = fake.sentence(nb_words=2)[:-1]
             time_created = fake.date_time()
             writer.writerow([cid, uid, cart_name, time_created])
-        print(f'{num_carts} generated')
+        print(f'{num_oldCarts} generated')
     return
 
-"""
-# __cid__, __pid__, product_name, price, category, store
-def gen_oldCartContent(num_purchases, num_carts, products):
-    with open('OldCartContent.csv', 'w') as f:
-        writer = get_csv_writer(f)
-        print('OldCartContents...', end=' ', flush=True)
-        counter = 0
-        for cid in range(num_carts):
-            if(counter>=num_purchases): break
-            # Generates list of random products user placed in cart
-            randomProductList = random.sample(range(0, num_products), random.randint(0, 50))
-            for j in randomProductList:
-                if(counter>=num_purchases): break
-                pid = j
-                product_name = products[j][1]
-                price = products[j][2]
-                category = products[j][3]
-                store = products[j][4]
-                writer.writerow([cid, pid, product_name, price, category, store])
-                counter += 1
-        print(f'{counter} generated;')
-    return
-"""
-# CHANGES: removed num_purchases to ensure each cart gets a list of products,
-#          instead for each cart, it generates a random number of products from 1-25
-# __cid__, __pid__, product_name, price, category, store
+# __cid__, __pid__, product_name, price, category, store, quantity
 def gen_oldCartContent(num_carts, products):
     with open('OldCartContent.csv', 'w') as f:
         writer = get_csv_writer(f)
@@ -158,14 +169,22 @@ def gen_oldCartContent(num_carts, products):
                 price = products[j][2]
                 category = products[j][3]
                 store = products[j][4]
-                writer.writerow([cid, pid, product_name, price, category, store])
+                qt = random.randint(1, 20)
+                writer.writerow([cid, pid, product_name, price, category, store, qt])
                 counter += 1
         print(f'{counter} generated;')
     return
 
-gen_users(num_users)
+# users
+# gen_users(num_users)
+# products
 products = gen_products(num_products)
-gen_preferences(num_preferences)
-gen_carts(num_itemsInCart)
-gen_oldCarts(num_carts)
-gen_oldCartContent(num_carts, products)
+# # preferences
+# gen_preferences(num_preferences)
+# # current carts
+# gen_carts(num_carts)
+# gen_cartLists(num_itemsInCart)
+# gen_cartContents(num_itemsInCart)
+# old carts
+gen_oldCarts(num_oldCarts)
+gen_oldCartContent(num_oldCarts, products)

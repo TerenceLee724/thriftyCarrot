@@ -1,35 +1,45 @@
-{% block content %}
+{% extends "base.html" %}
 
-<h1 style="text-align:center">Welcome to Thrifty Carrot!</h1>
-<form action="" method="post" novalidate style="text-align:center">
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.email.label }}<br/>
-    {{ form.email(size=32) }}<br/>
-    {% for error in form.email.errors %}
-    <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {{ form.password.label }}<br/>
-    {{ form.password(size=32) }}<br/>
-    {% for error in form.password.errors %}
-    <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-  </p>
-  {{ form.submit(class_="btn btn-black") }}
-  <a class="btn btn-secondary" href="{{ url_for('users.register') }}" role="button">New? Register here</a>
-</form>
-
-{% endblock %}
+{% block body %}
+<body style="background-color:#A0E8A2">
+<div class="center">
+  <div class="login-logo-bg">
+  </div>
+  <img src="{{ url_for('static', filename='CarrotIcon.png') }}" alt="Cartoon Carrot Logo" class="login-logo-carrot">
+  <div class="login-box">
+    <h1 class="font-weight-bold">Thrifty Carrot</h1>
+    <h2>Welcome!<h2>
+    <form action="" method="post" novalidate style="text-align:center">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.email.label }} <br/>
+        {{ form.email(size=32) }} <br/>
+        {% for error in form.email.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p>
+        {{ form.password.label }}<br/>
+        {{ form.password(size=32) }}<br/>
+        {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+      </p>
+      {{ form.submit(class_="btn btn-black") }}
+      <a class="btn btn-secondary" href="{{ url_for('users.register') }}" role="button">New? Register here</a>
+    </form>
+  </div>
+</div>
+</body>
+{% endblock body %}

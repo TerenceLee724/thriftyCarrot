@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "navbar.html" %}
 
 {% block content %}
 <div class="container">
@@ -18,7 +18,7 @@
           </div>
           <img src="{{ profilePic }}" alt="Profile" class="rounded-circle" width="150">
           <div class="mt-3">
-            <button class="btn btn-info">Change picture</button>
+            <button class="btn btn-info" style="background-color: var(--thriftyGreen); border-color:transparent; color:white;">Change picture</button>
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@
           <hr>
           <div class="row">
             <div class="col-sm-12">
-              <a class="btn btn-info" href="{{ url_for('users.update') }}">Update Info</a>
+              <a class="btn btn-info" style="background-color: var(--thriftyGreen); border-color:transparent; color:white;" href="{{ url_for('users.update') }}">Update Info</a>
             </div>
           </div>
         </div>

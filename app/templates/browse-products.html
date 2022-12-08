@@ -1,0 +1,99 @@
+<!-- view -->
+<!-- cid, pid, product_name, price, category, store -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Browse Products</h1>
+
+<form action="" method="post" novalidate id="featureform">
+  {{ featureform.hidden_tag() }}
+  <p>
+    {{ featureform.name.label }}<br/>
+    {{ featureform.name(size=32) }}<br/>
+    {% for error in featureform.name.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}<br/>
+    {{ featureform.minprice.label }}<br/>
+    {{ featureform.minprice(size=32) }}<br/>
+    {% for error in featureform.minprice.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}<br/>
+    {{ featureform.maxprice.label }}<br/>
+    {{ featureform.maxprice(size=32) }}<br/>
+    {% for error in featureform.maxprice.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}<br/>
+    {{ featureform.category.label }}<br/>
+    {{ featureform.category}}<br/>
+    {% for error in featureform.category.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}<br/>
+    {{ featureform.store.label }}<br/>
+    {{ featureform.store}}<br/>
+    {% for error in featureform.category.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  {{ featureform.submit(class_="btn btn-black") }}
+</form>
+
+  
+
+{% if featureform.validate_on_submit(): %}
+&nbsp;
+<h2>Matching Products:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Category</th>
+      <th scope="col">Store</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products%}
+      <tr>
+        <th scope="row">{{product.id}}</th>
+        <td>{{product.name}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.category}}</td>
+        <td>{{product.store}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+&nbsp;
+<h2>All Products:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Category</th>
+      <th scope="col">Store</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in allproducts%}
+      <tr>
+        <th scope="row">{{product.id}}</th>
+        <td>{{product.name}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.category}}</td>
+        <td>{{product.store}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+
+
+{% endblock %}

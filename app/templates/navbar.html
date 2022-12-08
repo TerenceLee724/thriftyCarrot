@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-md navbar-light">
+      {% block login %}
+      <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+          <a href="{{ url_for('home.home') }}">
+            <img src="{{ url_for('static', filename='CarrotIcon.png') }}" alt="Cartoon Carrot Logo" height="80px">
+          </a>
+        </ul>
+      </div>
+      <div class="title-nav mx-auto order-0 font-weight-bold">
+        <h1 style="color:#010101">Thrifty Carrot</h1>
+      </div>
+      <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
+          <li class="nav-item mt-4">
+            <a class="nav-link" href="{{ url_for('users.logout') }}" type="button" class="btn btn-login">Log Out</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('users.profile') }}">
+              <img src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/44928/rabbit-face-emoji-clipart-xl.png" alt="Profile" href="{{ url_for('users.profile') }}" width="70">
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-item" href="{{ url_for('users.login') }}" type="button" class="btn btn-login">Log in</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endblock %}
+    </nav>
+    {% block content %}{% endblock %}
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+    
+    {% block scripts %}{% endblock %}
+
+{% endblock body %}

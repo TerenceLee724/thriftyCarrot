@@ -54,3 +54,21 @@ ORDER BY time_created DESC
                               uid=uid,
                               since=since)
         return [OldCartModel(*row) for row in rows]
+
+# __cid__, uid, time_created, cart_name
+    @staticmethod
+    def insert(uid, cart_name):
+        try:
+            rows = app.db.execute("""
+INSERT INTO OldCarts(uid, cart_name)
+VALUES(:uid, :cart_name)
+RETURNING cid
+""",
+                                uid=uid,
+                                cart_name=cart_name)
+            cid = rows[0][0]
+            return cid
+        except Exception as e:
+            # product may already be in cart
+            print(str(e))
+            return None

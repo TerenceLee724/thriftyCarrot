@@ -1,48 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <title>ThriftyCarrot</title>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-</head>
+  <head>
+    <title>ThriftyCarrot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
 
-<body>
-<nav class="navbar navbar-expand-md navbar-light">
-  {% block login %}
-  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-    <ul class="navbar-nav mr-auto">
-      <img src="ThriftyCarrotMockLogo.png" alt="Cartoon Carrot Logo">
-    </ul>
-  </div>
-  <div class="title-nav mx-auto order-0">
-    <h1 style="color:#010101">Thrifty Carrot</h1>
-  </div>
-  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-    <ul class="navbar-nav ml-auto">
-      {% if current_user.is_authenticated %}
-      <li class="nav-item mt-4">
-        <a class="nav-link" href="{{ url_for('users.logout') }}" type="button" class="btn btn-login">Log Out</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('users.profile') }}">
-          <img src="{{ profilePic }}" alt="Profile" href="{{ url_for('users.profile') }}" class="rounded-circle" width="70">
-        </a>
-      </li>
-      {% else %}
-      <li class="nav-item">
-        <a class="nav-item" href="{{ url_for('users.login') }}" type="button" class="btn btn-login">Log in</a>
-      </li>
-      {% endif %}
-    {% endblock %}
-  </ul>
-  </div>
-</nav>
-  <div class="main">
-    {% block content %}{% endblock %}
-  </div>
-</body>
+    {% block stylesheets %} {% endblock %}
+  </head>
 
+  <body>
+    {% block body %} {% endblock %}
+  </body>
 </html>
